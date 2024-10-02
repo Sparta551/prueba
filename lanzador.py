@@ -21,7 +21,7 @@ def conectar_bd():
     return conexion, cursor
   except mysql.connector.Error as err:
     mylcd.lcd_display_string("Error a conectarse", 1)
-    return none, none
+    return None, None
     print('error de conexion')
 
 def insertar_placa(cursor, placa):
