@@ -20,7 +20,8 @@ def conectar_bd():
     print('conexion establecida')
     return conexion, cursor
   except mysql.connector.Error as err:
-    mylcd.lcd_display_string("Error a conectarse", 1)
+    mylcd.lcd_display_string("Error al", 1)
+    mylcd.lcd_display_string("conectarse", 2)
     return None, None
     print('error de conexion')
 
