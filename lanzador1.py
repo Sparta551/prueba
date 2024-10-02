@@ -48,7 +48,7 @@ def main():
     while True:
         # Mostrar mensaje en el LCD para ingresar una placa
         mylcd.lcd_display_string("Insertar placa:", 1)
-        
+        placa = mylcd.lcd_load_custom_chars("Insertar placas").strip()
         # Capturar entrada del usuario (simulando por consola)
         placa = input("Ingresa la placa (o 0 para salir): ").strip()  # Simulación del input por consola
         
