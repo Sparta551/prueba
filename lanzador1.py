@@ -1,6 +1,9 @@
 import I2C_LCD_driver
 from time import sleep
 import mysql.connector
+import sys
+import termios
+import tty
 
 # Inicializar el LCD
 mylcd = I2C_LCD_driver.lcd()
@@ -38,6 +41,41 @@ def insertar_placa(cursor, placa):
     query = "INSERT INTO prueba.PLACAS (PLACAS) VALUES (%s)"
     cursor.execute(query, (placa,))
 
+def getch():
+    """
+    Captura un solo carácter del teclado sin esperar un Enter.
+    """
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        ch = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
+
+def leer_placa():
+    """
+    Lee la placa carácter por carácter, mostrando lo ingresado en el LCD en tiempo real.
+    """
+    placa = ""
+    while True:
+        mylcd.lcd_display_string("Escriba placa:", 1)
+        char = getch()
+
+        if char == '\n' or char == '\r':  # Terminar cuando se presiona Enter
+            break
+        elif char == '\x7f':  # Manejo del carácter de retroceso (backspace)
+            if len(placa) > 0:
+                placa = placa[:-1]  # Eliminar el último carácter
+                mylcd.lcd_display_string(" " * 16, 2)  # Limpiar línea 2 del LCD
+                mylcd.lcd_display_string(placa, 2)  # Mostrar la placa actualizada
+        else:
+            placa += char
+            mylcd.lcd_display_string(placa, 2)  # Mostrar lo que se ha escrito en la línea 2 del LCD
+
+    return placa.strip()
+
 def main():
     # Conectar a la base de datos
     conexion, cursor = conectar_bd()
@@ -46,12 +84,9 @@ def main():
         return 0
     
     while True:
-        # Mostrar mensaje en el LCD para ingresar una placa
+        # Leer la placa en tiempo real y mostrarla en el LCD
         mylcd.lcd_clear()
-        mylcd.lcd_display_string("Insertar placa:", 1)
-        
-        # Capturar entrada del usuario (simulando por consola)
-        placa = input("Ingresa la placa (o 0 para salir): ").strip()  # Simulación del input por consola
+        placa = leer_placa()
         
         # Mostrar la placa ingresada en el LCD
         mylcd.lcd_clear()
