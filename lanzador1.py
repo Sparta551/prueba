@@ -1,5 +1,5 @@
 import I2C_LCD_driver
-from time import *
+from time import sleep
 import mysql.connector
 
 # Inicializar el LCD
@@ -47,23 +47,36 @@ def main():
     
     while True:
         # Mostrar mensaje en el LCD para ingresar una placa
+        mylcd.lcd_clear()
         mylcd.lcd_display_string("Insertar placa:", 1)
-        placa = mylcd.lcd_load_custom_chars("Insertar placas").strip()
+        
         # Capturar entrada del usuario (simulando por consola)
         placa = input("Ingresa la placa (o 0 para salir): ").strip()  # Simulación del input por consola
         
+        # Mostrar la placa ingresada en el LCD
+        mylcd.lcd_clear()
+        mylcd.lcd_display_string(f"Placa: {placa}", 1)
+
         if placa == '0':
             mylcd.lcd_display_string("Fin del programa", 1)
             print('Fin del programa')
             break
         
         # Insertar la placa en la base de datos
-        insertar_placa(cursor, placa)
-        conexion.commit()
-        
-        # Mostrar confirmación en el LCD
-        mylcd.lcd_display_string("Placa insertada!", 1)
-        sleep(2)  # Pausa para mostrar el mensaje en el LCD antes de continuar
+        try:
+            insertar_placa(cursor, placa)
+            conexion.commit()
+            
+            # Mostrar confirmación en el LCD
+            mylcd.lcd_clear()
+            mylcd.lcd_display_string("Placa insertada!", 1)
+            sleep(2)  # Pausa para mostrar el mensaje en el LCD antes de continuar
+        except mysql.connector.Error as err:
+            # Mostrar mensaje de error en el LCD
+            mylcd.lcd_clear()
+            mylcd.lcd_display_string("Error al insertar", 1)
+            print(f"Error al insertar la placa: {err}")
+            sleep(2)
     
     # Cerrar la conexión
     cursor.close()
