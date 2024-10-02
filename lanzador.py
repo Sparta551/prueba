@@ -7,7 +7,7 @@ mylcd = I2C_LCD_driver.lcd()
 config ={
   'user': 'raspberry',
   'password': 'Empanadas2045/',
-  'host': '4.228.37.57',
+  'host': 'parkease-ur.brazilsouth.cloudapp.azure.com',
   'database': 'prueba',
 }
 
