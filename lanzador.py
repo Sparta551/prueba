@@ -2,6 +2,8 @@ import I2C_LCD_driver
 from time import *
 import mysql.connector
 
+mylcd = I2C_LCD_driver.lcd()
+
 config ={
   'user': 'raspberry',
   'password': 'Empanadas2045/',
