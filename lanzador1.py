@@ -26,11 +26,13 @@ def conectar_bd():
         cursor = conexion.cursor()
         
         # Mostrar en el LCD si la conexión fue exitosa
+        mylcd.lcd_clear()
         mylcd.lcd_display_string("Conexion establecida", 1)
         print('Conexión establecida')
         return conexion, cursor
     except mysql.connector.Error as err:
         # Mostrar error en el LCD y en la consola
+        mylcd.lcd_clear()
         mylcd.lcd_display_string("Error al", 1)
         mylcd.lcd_display_string("conectarse", 2)
         print(f"Error de conexión: {err}")
@@ -60,6 +62,7 @@ def leer_placa():
     """
     placa = ""
     while True:
+        mylcd.lcd_clear()
         mylcd.lcd_display_string("Escriba placa:", 1)
         char = getch()
 
@@ -91,8 +94,9 @@ def main():
         # Mostrar la placa ingresada en el LCD
         mylcd.lcd_clear()
         mylcd.lcd_display_string(f"Placa: {placa}", 1)
-
+        
         if placa == '0':
+            mylcd.lcd_clear()
             mylcd.lcd_display_string("Fin del programa", 1)
             print('Fin del programa')
             break
